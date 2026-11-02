@@ -119,3 +119,5 @@ details p { margin: .6em 0 0; }
   nav a:not(.btn) { display: none; }
   .cover { width: 240px; }
 }
+
+.form-msg { background: #fdecee; color: #8e0715; border-radius: 6px; padding: .7em 1em; font-weight: 600; margin: .4em 0 0; }

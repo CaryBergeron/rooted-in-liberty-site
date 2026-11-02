@@ -60,12 +60,14 @@
       <h2>Where should we send your free book?</h2>
       <p>Enter your name and email. You'll get the book right away, plus a short note from us when each new book in the Library is ready.</p>
       <!-- Email provider form: set the action URL in the runbook step "Connect the email list" -->
-      <form class="signup-form" id="signup-form" action="#" method="post">
+      <form class="signup-form" id="signup-form" action="https://gocolorado.us20.list-manage.com/subscribe/post?u=abdd07aad912308a6fd945866&amp;id=90a248a56b&amp;f_id=00647fe0f0" method="post">
         <label for="fname">First name</label>
         <input id="fname" name="FNAME" type="text" autocomplete="given-name" required>
         <label for="email">Email address</label>
         <input id="email" name="EMAIL" type="email" autocomplete="email" required>
-        <input type="hidden" name="tags" value="sampler-washington">
+        <input type="hidden" name="tags" value="1637739">
+        <div aria-hidden="true" style="position:absolute;left:-5000px"><input type="text" name="b_abdd07aad912308a6fd945866_90a248a56b" tabindex="-1" value=""></div>
+        <p class="form-msg" id="form-msg" role="alert" hidden></p>
         <button type="submit" class="btn btn-big">Send Me My Free Book</button>
         <p class="fineprint">We never sell your email. Unsubscribe anytime with one click. <a href="privacy.html">Privacy policy</a></p>
       </form>
@@ -151,14 +153,40 @@
 </footer>
 
 <script>
-  // Set this to your email provider's form action URL (see runbook). Until then, the form sends people to the thank-you page.
-  var FORM_ACTION = "";
-  var form = document.getElementById('signup-form');
-  if (FORM_ACTION) { form.action = FORM_ACTION; }
-  else {
-    form.addEventListener('submit', function (e) { e.preventDefault(); window.location.href = 'thank-you.html'; });
-  }
-  document.getElementById('yr').textContent = new Date().getFullYear();
+  // Signups go to the Rooted In Liberty audience in Mailchimp (tag: sampler-washington).
+  // JavaScript posts in the background and sends people to thank-you.html.
+  // Without JavaScript, the form posts straight to Mailchimp.
+  (function () {
+    var form = document.getElementById('signup-form');
+    var msg = document.getElementById('form-msg');
+    var btn = form.querySelector('button[type=submit]');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      msg.hidden = true;
+      btn.disabled = true; btn.textContent = 'Sending...';
+      var cb = 'mc_cb_' + Date.now();
+      var params = new URLSearchParams(new FormData(form));
+      params.append('c', cb);
+      var url = form.action.replace('/subscribe/post?', '/subscribe/post-json?') + '&' + params.toString();
+      var script = document.createElement('script');
+      var done = function () { delete window[cb]; script.remove(); btn.disabled = false; btn.textContent = 'Send Me My Free Book'; };
+      window[cb] = function (res) {
+        done();
+        var text = (res && res.msg) ? String(res.msg) : '';
+        if (res && (res.result === 'success' || /already subscribed/i.test(text))) {
+          if (window.fbq) { try { fbq('track', 'Lead'); } catch (err) {} }
+          window.location.href = 'thank-you.html';
+        } else {
+          msg.textContent = text.replace(/<[^>]+>/g, '').replace(/^\d+ - /, '') || 'Something went wrong. Please try again.';
+          msg.hidden = false;
+        }
+      };
+      script.onerror = function () { done(); form.submit(); };
+      script.src = url;
+      document.body.appendChild(script);
+    });
+    document.getElementById('yr').textContent = new Date().getFullYear();
+  })();
 </script>
 </body>
 </html>
