@@ -38,9 +38,9 @@
         <ul class="checks">
           <li>25 lessons drawn from Washington's own words and deeds</li>
           <li>Large, easy-to-read type</li>
-          <li>Delivered free to your email in minutes</li>
+          <li>Free, delivered to your email by November 16 or sooner</li>
         </ul>
-        <a href="#free-book" class="btn btn-big">Send Me My Free Book</a>
+        <a href="#free-book" class="btn btn-big">Reserve My Free Copy</a>
       </div>
       <div class="hero-book">
         <div class="cover cover-cream">
@@ -57,8 +57,9 @@
 
   <section class="signup" id="free-book">
     <div class="wrap signup-box">
-      <h2>Where should we send your free book?</h2>
-      <p>Enter your name and email. You'll get the book right away, plus a short note from us when each new book in the Library is ready.</p>
+      <h2>Reserve your free copy</h2>
+      <p class="release-note"><strong>Coming November 16, 2026.</strong> The book is in its final edit. Sign up now and we'll email it to you by November 16, or sooner if it's ready early.</p>
+      <p>Enter your name and email. You'll also get a short note from me when each new book in the Library is ready.</p>
       <!-- Email provider form: set the action URL in the runbook step "Connect the email list" -->
       <form class="signup-form" id="signup-form" action="https://gocolorado.us20.list-manage.com/subscribe/post?u=abdd07aad912308a6fd945866&amp;id=90a248a56b&amp;f_id=00647fe0f0" method="post">
         <label for="fname">First name</label>
@@ -68,7 +69,7 @@
         <input type="hidden" name="tags" value="1637739">
         <div aria-hidden="true" style="position:absolute;left:-5000px"><input type="text" name="b_abdd07aad912308a6fd945866_90a248a56b" tabindex="-1" value=""></div>
         <p class="form-msg" id="form-msg" role="alert" hidden></p>
-        <button type="submit" class="btn btn-big">Send Me My Free Book</button>
+        <button type="submit" class="btn btn-big">Reserve My Free Copy</button>
         <p class="fineprint">We never sell your email. Unsubscribe anytime with one click. <a href="privacy.html">Privacy policy</a></p>
       </form>
     </div>
@@ -135,7 +136,8 @@
   <section class="faq">
     <div class="wrap">
       <h2 class="center">Questions</h2>
-      <details><summary>Is the book really free?</summary><p>Yes. Enter your email and we'll send it right away. There's nothing to buy.</p></details>
+      <details><summary>When will I get it?</summary><p>The book is in its final edit. Everyone who signs up gets it by email on or before November 16, 2026.</p></details>
+      <details><summary>Is the book really free?</summary><p>Yes. There's nothing to buy. Enter your email now and we'll send it to you by November 16, or sooner.</p></details>
       <details><summary>What format is it in?</summary><p>A PDF you can read on a phone, tablet, or computer, or print at home. The type is large and easy to read.</p></details>
       <details><summary>Where can I buy the other books?</summary><p>Each book will be available on Amazon in paperback, large print, and Kindle. Subscribers hear about new books first, often with a launch-week discount.</p></details>
       <details><summary>Will you share my email?</summary><p>Never. You can unsubscribe at any time with one click.</p></details>
@@ -169,7 +171,7 @@
       params.append('c', cb);
       var url = form.action.replace('/subscribe/post?', '/subscribe/post-json?') + '&' + params.toString();
       var script = document.createElement('script');
-      var done = function () { delete window[cb]; script.remove(); btn.disabled = false; btn.textContent = 'Send Me My Free Book'; };
+      var done = function () { delete window[cb]; script.remove(); btn.disabled = false; btn.textContent = 'Reserve My Free Copy'; };
       window[cb] = function (res) {
         done();
         var text = (res && res.msg) ? String(res.msg) : '';
