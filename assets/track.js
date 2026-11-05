@@ -1,7 +1,7 @@
 /* Rooted In Liberty: tiny visit, signup and download counter.
    Sends to our Cloudflare Worker. No cookies, nothing personal. */
 (function () {
-  var URL_BASE = ''; // set to the Worker address once it's deployed, e.g. https://ril-stats.example.workers.dev
+  var URL_BASE = 'https://ril-stats.cary-bergeron.workers.dev';
   function send(type, source) {
     if (!URL_BASE) return;
     var body = JSON.stringify({ type: type, source: source || '', page: location.pathname, referrer: document.referrer || '' });
