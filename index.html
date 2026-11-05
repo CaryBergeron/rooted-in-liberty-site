@@ -170,6 +170,7 @@
         var text = (res && res.msg) ? String(res.msg) : '';
         if (res && (res.result === 'success' || /already subscribed/i.test(text))) {
           if (window.fbq) { try { fbq('track', 'Lead'); } catch (err) {} }
+          if (window.rilTrack) { try { rilTrack('signup', new URLSearchParams(location.search).get('src') || ''); } catch (err) {} }
           window.location.href = 'thank-you.html';
         } else {
           msg.textContent = text.replace(/<[^>]+>/g, '').replace(/^\d+ - /, '') || 'Something went wrong. Please try again.';
@@ -183,5 +184,6 @@
     document.getElementById('yr').textContent = new Date().getFullYear();
   })();
 </script>
+<script src="assets/track.js" defer></script>
 </body>
 </html>
