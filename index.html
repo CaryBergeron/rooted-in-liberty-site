@@ -54,7 +54,7 @@
       <p class="release-note"><strong>Ready now.</strong> Enter your name and email, and you can download the book on the next page. We'll email you a copy too.</p>
       <p>Enter your name and email. You'll also get a short note from me when each new book in the Library is ready.</p>
       <!-- Email provider form: set the action URL in the runbook step "Connect the email list" -->
-      <form class="signup-form" id="signup-form" action="https://gocolorado.us20.list-manage.com/subscribe/post?u=abdd07aad912308a6fd945866&amp;id=90a248a56b&amp;f_id=00647fe0f0" method="post">
+      <form class="signup-form" id="signup-form" method="post" novalidate>
         <label for="fname">First name</label>
         <input id="fname" name="FNAME" type="text" autocomplete="given-name" required>
         <label for="email">Email address</label>
@@ -155,14 +155,25 @@
     var form = document.getElementById('signup-form');
     var msg = document.getElementById('form-msg');
     var btn = form.querySelector('button[type=submit]');
+    var loadedAt = Date.now(), humanTouched = false;
+    ['keydown', 'pointerdown', 'touchstart', 'focusin'].forEach(function (ev) { form.addEventListener(ev, function () { humanTouched = true; }, { passive: true }); });
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       msg.hidden = true;
+      // Spam filters: bots get a fake "success" and nothing is sent to Mailchimp.
+      var fname = form.FNAME.value.trim(), email = form.EMAIL.value.trim().toLowerCase();
+      if (!fname || !/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/.test(email)) { msg.textContent = 'Please enter your first name and a valid email address.'; msg.hidden = false; return; }
+      var local = email.split('@')[0], domain = email.split('@')[1];
+      var tooFast = (Date.now() - loadedAt) < 3500;
+      var trapFilled = form.querySelector('[name^="b_"]').value !== '';
+      var dottedGmail = /^(gmail|googlemail)\.com$/.test(domain) && (local.match(/\./g) || []).length >= 3;
+      var junkName = /^[^aeiouy\s]{4,}$/i.test(fname) || /https?:|www\.|\d{3,}/i.test(fname);
+      if (tooFast || trapFilled || dottedGmail || junkName || !humanTouched) { window.location.href = 'thank-you.html'; return; }
       btn.disabled = true; btn.textContent = 'Sending...';
       var cb = 'mc_cb_' + Date.now();
       var params = new URLSearchParams(new FormData(form));
       params.append('c', cb);
-      var url = form.action.replace('/subscribe/post?', '/subscribe/post-json?') + '&' + params.toString();
+      var url = ['https://gocolorado', 'us20.list-manage.com/subscribe/post-json?u=abdd07aad912308a6fd945866&id=90a248a56b&f_id=00647fe0f0'].join('.') + '&' + params.toString();
       var script = document.createElement('script');
       var done = function () { delete window[cb]; script.remove(); btn.disabled = false; btn.textContent = 'Get My Free Copy'; };
       window[cb] = function (res) {
@@ -177,7 +188,7 @@
           msg.hidden = false;
         }
       };
-      script.onerror = function () { done(); form.submit(); };
+      script.onerror = function () { done(); msg.textContent = 'Something went wrong. Please try again in a minute.'; msg.hidden = false; };
       script.src = url;
       document.body.appendChild(script);
     });
